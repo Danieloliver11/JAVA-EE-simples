@@ -19,9 +19,18 @@ import br.com.magnasistemas.cachacariaapi.service.ProdutoService;
 
 @Path("produto")
 public class ProdutoController {
-
+	
 	@Inject
 	private ProdutoService produtoservice;
+	
+	
+	//public ProdutoMapper mapper;
+	
+
+	/*public ProdutoController(ProdutoMapper mapper) {
+		super();
+		this.mapper = mapper;
+	}*/
 
 	@GET
 	@Produces(value = MediaType.APPLICATION_JSON)
@@ -53,8 +62,20 @@ public class ProdutoController {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
-
-	@POST // ok
+	@GET
+	@Path("/nome/{nome}")
+	@Produces(value = MediaType.APPLICATION_JSON)
+	public Response findWithName(@PathParam("nome") String nome) {
+		List<Produto> produto = null;
+		try {
+			produto = produtoservice.findWithName(nome);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.ok(produto).build();
+	}
+	
+	@POST // ok,
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postProduto(Produto produto) {
@@ -67,8 +88,24 @@ public class ProdutoController {
 		}
 	}
 
+	/*
+	@POST // ok,
+	@Consumes(value = MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response postProduto(Produto produto) {
+
+		try {
+			produtoservice.postProduto(mapper.paraDTO(produto));
+			return Response.status(Response.Status.CREATED).entity(produto).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}*/
+	
+	
+
 	@PUT
-	@Path("{id}")// nao muito
+	@Path("{id}") // nao muito
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putProduto(@PathParam("id") long id, Produto produto) {
@@ -83,7 +120,7 @@ public class ProdutoController {
 	}
 
 	@DELETE
-	@Path("{id}")// no v
+	@Path("{id}") // no v
 	public Response deleteProduto(@PathParam("id") long id) {
 		Produto produtoId = produtoservice.findByIdProduto(id);
 		produtoservice.deleteProduto(produtoId);
@@ -93,6 +130,8 @@ public class ProdutoController {
 }
 
 /*
+ * antes do mapper.
+ * 
  * @GET
  * 
  * @Produces(value = MediaType.APPLICATION_JSON) public Response getAllProduto()
@@ -102,31 +141,20 @@ public class ProdutoController {
  * 
  * @GET
  * 
- * @Path("{id}") // no muito
- * 
- * @Produces(value = MediaType.APPLICATION_JSON) public Response
- * findProdutoBYid(@PathParam("id") long id) { try { return
- * Response.ok(produtoservice.findByIdProduto(id)).build(); } catch (Exception
- * e) { e.printStackTrace(); }
- * 
- * return Response.status(Status.HTTP_VERSION_NOT_SUPPORTED).build(); }
- * 
- * @GET
- * 
- * @Path("{id}") // no muito
+ * @Path("{id}") // Ok!
  * 
  * @Produces(value = MediaType.APPLICATION_JSON) public Response
  * findProdutoBYid(@PathParam("id") long id) {
  * 
  * Produto produto = produtoservice.findProdutoBYid(id);
  * 
- * try { if (produto.getId() == id) { return Response.ok(produto).build(); }else
- * { throw new Exception(); }
+ * try { if (produto.getId() == id) { return Response.ok(produto).build(); }
+ * else { throw new Exception(); }
  * 
  * } catch (Exception e) { return
- * Response.status(Response.Status.NOT_FOUND).build(); }
+ * Response.status(Response.Status.NOT_FOUND).build(); } }
  * 
- * @POST // ok
+ * @POST // ok,
  * 
  * @Consumes(value = MediaType.APPLICATION_JSON)
  * 
@@ -141,7 +169,7 @@ public class ProdutoController {
  * 
  * @PUT
  * 
- * @Path("{id}")
+ * @Path("{id}")// nao muito
  * 
  * @Consumes(value = MediaType.APPLICATION_JSON)
  * 
@@ -156,8 +184,8 @@ public class ProdutoController {
  * 
  * @DELETE
  * 
- * @Path("{id}") public Response deleteProduto(@PathParam("id") long id) {
- * Produto produtoId = produtoservice.findByIdProduto(id);
+ * @Path("{id}")// no v public Response deleteProduto(@PathParam("id") long id)
+ * { Produto produtoId = produtoservice.findByIdProduto(id);
  * produtoservice.deleteProduto(produtoId); return Response.ok().build(); }
  * 
  */

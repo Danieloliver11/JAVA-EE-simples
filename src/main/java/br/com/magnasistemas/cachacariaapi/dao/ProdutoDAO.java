@@ -17,9 +17,15 @@ public class ProdutoDAO {
 	public List<Produto> findAllProduto() {
 		return em.createQuery("SELECT ae FROM Produto ae", Produto.class).getResultList();
 	}
+	
 	public Produto findProdutoBYid(long id) {
 		
 		return em.find(Produto.class,id);
+	}
+	
+	
+	public List<Produto> findWithName(String name) {
+	    return em.createQuery("SELECT c FROM Produto c WHERE c.nome LIKE :custName").setParameter("custName", name).getResultList();
 	}
 
 	public Produto postProduto(Produto produto) {
@@ -39,6 +45,8 @@ public class ProdutoDAO {
 		}
 		 em.remove(produto);
 	}
+	
+	
 	
 	/*
 	 
