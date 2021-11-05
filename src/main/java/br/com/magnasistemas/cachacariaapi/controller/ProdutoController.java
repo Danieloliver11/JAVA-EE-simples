@@ -26,7 +26,7 @@ import br.com.magnasistemas.cachacariaapi.service.ProdutoService;
 public class ProdutoController {
 
 	@Inject
-	private ProdutoService produtoservice;	
+	private ProdutoService produtoservice;
 
 	ModelMapper modelmapper = new ModelMapper();
 
@@ -43,7 +43,7 @@ public class ProdutoController {
 		}
 	}
 
-	@GET // Ok! mapper ok tentat deixar mais bonito!!!
+	@GET // Ok! mapper ok !!!
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response getAllProduto() {
 		List<Produto> produto = null;
@@ -60,17 +60,20 @@ public class ProdutoController {
 	}
 
 	@GET
-	@Path("{id}") // Ok mapper ok!
+	@Path("{id}") // Ok mapper ok! tem que arrumar exceptions!!!
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response findProdutoBYid(@PathParam("id") long id) {
 
 		ProdutoDTO produtoDTO = modelmapper.map(produtoservice.findByIdProduto(id), ProdutoDTO.class);
 		try {
-
-			return Response.ok(produtoDTO).build();
+			if (produtoDTO != null) {
+				return Response.ok(produtoDTO).build();
+			} else {
+				throw new Exception("Id não encontrado!");
+			}
 
 		} catch (Exception e) {
-			return Response.status(Response.Status.NOT_FOUND).build();
+			return Response.status(Response.Status.NOT_FOUND).entity("Id não encontrado!").build();
 		}
 	}
 
@@ -82,14 +85,13 @@ public class ProdutoController {
 		try {
 			produtoDTO = produtoservice.findWithName(nome);
 		} catch (Exception e) {
-			
-			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+			return Response.status(Response.Status.NOT_FOUND).entity("Não foi passado nenhum nome!").build();
 		}
 		return Response.ok(produtoDTO).build();
 	}
 
 	@PUT
-	@Path("{id}") // erro nao muito, dto ok
+	@Path("{id}") // exception ok muito, dto ok
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putProduto(@PathParam("id") long id, Produto produto) {
@@ -98,17 +100,17 @@ public class ProdutoController {
 			produtoid = produtoservice.putProduto(id, produto);
 			Produto prod = produtoservice.findByIdProduto(id);
 			if (prod == null) {
-				throw new Exception("Id não encontrado!");
+				throw new Exception();
 			}
 			return Response.status(Response.Status.OK).entity(produtoid).build();
 		} catch (Exception e) {
-			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+			return Response.status(Response.Status.NOT_FOUND).entity("Id não encontrado!").build();
 		}
 
 	}
 
 	@DELETE
-	@Path("{id}") // dto ok ERRO ok
+	@Path("{id}") // dto ok exception ok
 	public Response deleteProduto(@PathParam("id") long id) {
 		try {
 			Produto produtoId = produtoservice.findByIdProduto(id);

@@ -20,6 +20,7 @@ public class ProdutoService {
 
 	ModelMapper modelmapper = new ModelMapper();
 	//ok com dto
+	
 	public ProdutoDTO postProduto(Produto produto) {
 
 		Produto prod = dao.postProduto(produto);
