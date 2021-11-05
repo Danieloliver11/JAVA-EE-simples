@@ -23,6 +23,18 @@ public class Produto implements Serializable{
 	private double preco;
 	
 	private String sabor;
+	
+	
+	public Produto() {
+		
+	}
+	public Produto(long id, String nome, double preco, String sabor) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.preco = preco;
+		this.sabor = sabor;
+	}
 
 	public long getId() {
 		return id;

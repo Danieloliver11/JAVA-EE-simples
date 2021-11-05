@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 
 import br.com.magnasistemas.cachacariaapi.entity.Produto;
 
+
 @Stateless
 public class ProdutoDAO {
 

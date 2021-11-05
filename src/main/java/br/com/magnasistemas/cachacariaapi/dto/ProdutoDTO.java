@@ -2,7 +2,7 @@ package br.com.magnasistemas.cachacariaapi.dto;
 
 public class ProdutoDTO {
 
-	private long id;
+	
 
 	private String nome;
 
@@ -11,15 +11,18 @@ public class ProdutoDTO {
 	private String sabor;
 	
 	
-
-	public long getId() {
-		return id;
+	public ProdutoDTO() {
+		
+	}
+	public ProdutoDTO(String nome, double preco, String sabor) {
+		super();
+		
+		this.nome = nome;
+		this.preco = preco;
+		this.sabor = sabor;
 	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
-
+	
 	public String getNome() {
 		return nome;
 	}
@@ -46,7 +49,7 @@ public class ProdutoDTO {
 
 	@Override
 	public String toString() {
-		return "ProdutoDTO [id=" + id + ", nome=" + nome + ", preco=" + preco + ", sabor=" + sabor + "]";
+		return "ProdutoDTO nome=" + nome + ", preco=" + preco + ", sabor=" + sabor + "]";
 	}
 	
 	

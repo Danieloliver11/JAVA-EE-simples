@@ -1,6 +1,7 @@
 package br.com.magnasistemas.cachacariaapi.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -14,104 +15,91 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.modelmapper.ModelMapper;
+
+import br.com.magnasistemas.cachacariaapi.dto.ProdutoDTO;
 import br.com.magnasistemas.cachacariaapi.entity.Produto;
 import br.com.magnasistemas.cachacariaapi.service.ProdutoService;
 
+//
 @Path("produto")
 public class ProdutoController {
-	
+
 	@Inject
-	private ProdutoService produtoservice;
-	
-	
-	//public ProdutoMapper mapper;
-	
+	private ProdutoService produtoservice;	
 
-	/*public ProdutoController(ProdutoMapper mapper) {
-		super();
-		this.mapper = mapper;
-	}*/
+	ModelMapper modelmapper = new ModelMapper();
 
-	@GET
+	@POST // ok dto ok,
+	@Consumes(value = MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response postProduto(ProdutoDTO produtoDTO) {
+
+		try {
+			produtoservice.postProduto(modelmapper.map(produtoDTO, Produto.class));
+			return Response.status(Response.Status.CREATED).entity(produtoDTO).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
+
+	@GET // Ok! mapper ok tentat deixar mais bonito!!!
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response getAllProduto() {
 		List<Produto> produto = null;
+		List<ProdutoDTO> produtoDTO = null;
+
 		try {
 			produto = produtoservice.findAllProduto();
+			produtoDTO = produto.stream().map(prods -> modelmapper.map(prods, ProdutoDTO.class))
+					.collect(Collectors.toList());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return Response.ok(produto).build();
+		return Response.ok(produtoDTO).build();
 	}
 
 	@GET
-	@Path("{id}") // Ok!
+	@Path("{id}") // Ok mapper ok!
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response findProdutoBYid(@PathParam("id") long id) {
 
-		Produto produto = produtoservice.findProdutoBYid(id);
-
+		ProdutoDTO produtoDTO = modelmapper.map(produtoservice.findByIdProduto(id), ProdutoDTO.class);
 		try {
-			if (produto.getId() == id) {
-				return Response.ok(produto).build();
-			} else {
-				throw new Exception();
-			}
+
+			return Response.ok(produtoDTO).build();
 
 		} catch (Exception e) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
+
 	@GET
-	@Path("/nome/{nome}")
+	@Path("/nome/{nome}") // mapper ok! Arrumar para achar todos por qualquer letra
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response findWithName(@PathParam("nome") String nome) {
-		List<Produto> produto = null;
+		List<ProdutoDTO> produtoDTO = null;
 		try {
-			produto = produtoservice.findWithName(nome);
+			produtoDTO = produtoservice.findWithName(nome);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
 		}
-		return Response.ok(produto).build();
+		return Response.ok(produtoDTO).build();
 	}
-	
-	@POST // ok,
-	@Consumes(value = MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response postProduto(Produto produto) {
-
-		try {
-			produtoservice.postProduto(produto);
-			return Response.status(Response.Status.CREATED).entity(produto).build();
-		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-		}
-	}
-
-	/*
-	@POST // ok,
-	@Consumes(value = MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response postProduto(Produto produto) {
-
-		try {
-			produtoservice.postProduto(mapper.paraDTO(produto));
-			return Response.status(Response.Status.CREATED).entity(produto).build();
-		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-		}
-	}*/
-	
-	
 
 	@PUT
-	@Path("{id}") // nao muito
+	@Path("{id}") // erro nao muito, dto ok
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putProduto(@PathParam("id") long id, Produto produto) {
-		Produto produtoid = null;
+		ProdutoDTO produtoid = null;
 		try {
 			produtoid = produtoservice.putProduto(id, produto);
+			Produto prod = produtoservice.findByIdProduto(id);
+			if (prod == null) {
+				throw new Exception("Id não encontrado!");
+			}
 			return Response.status(Response.Status.OK).entity(produtoid).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
@@ -120,14 +108,51 @@ public class ProdutoController {
 	}
 
 	@DELETE
-	@Path("{id}") // no v
+	@Path("{id}") // dto ok ERRO ok
 	public Response deleteProduto(@PathParam("id") long id) {
-		Produto produtoId = produtoservice.findByIdProduto(id);
-		produtoservice.deleteProduto(produtoId);
+		try {
+			Produto produtoId = produtoservice.findByIdProduto(id);
+			if (produtoId != null) {
+				produtoservice.deleteProduto(produtoId);
+			} else {
+				throw new Exception("Id não encontrado!");
+			}
+		} catch (Exception e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+		}
+
 		return Response.ok().build();
 	}
 
 }
+
+/*
+ * @POST // ok,
+ * 
+ * @Consumes(value = MediaType.APPLICATION_JSON)
+ * 
+ * @Produces(MediaType.APPLICATION_JSON) public Response postProduto(Produto
+ * produto) {
+ * 
+ * try { produtoservice.postProduto(produto); return
+ * Response.status(Response.Status.CREATED).entity(produto).build(); } catch
+ * (Exception e) { return
+ * Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+ * .build(); } } //mapper
+ * 
+ * @POST // ok,
+ * 
+ * @Consumes(value = MediaType.APPLICATION_JSON)
+ * 
+ * @Produces(MediaType.APPLICATION_JSON) public Response postProduto(Produto
+ * produto) {
+ * 
+ * try { produtoservice.postProduto(modelmapper.map(produto, ProdutoDTO.class));
+ * return Response.status(Response.Status.CREATED).entity(produto).build(); }
+ * catch (Exception e) { return
+ * Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+ * .build(); } }
+ */
 
 /*
  * antes do mapper.
