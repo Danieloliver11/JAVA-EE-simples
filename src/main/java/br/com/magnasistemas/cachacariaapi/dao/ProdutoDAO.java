@@ -26,7 +26,7 @@ public class ProdutoDAO {
 	
 	
 	public List<Produto> findWithName(String name) {
-	    return em.createQuery("SELECT c FROM Produto c WHERE c.nome LIKE :custName").setParameter("custName", name).getResultList();
+	    return em.createQuery("SELECT c FROM Produto c WHERE c.nome LIKE :custName").setParameter("custName", name + "%").getResultList();
 	}
 
 	public Produto postProduto(Produto produto) {

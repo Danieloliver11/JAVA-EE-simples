@@ -3,7 +3,6 @@ package br.com.magnasistemas.cachacariaapi.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.json.bind.annotation.JsonbProperty;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,26 +23,26 @@ public class Produto implements Serializable {
 	private double preco;
 
 	private String sabor;
-	
+
 	@ManyToOne
 	private Cliente cliente;
+
+	@ManyToOne
+	private Marca marca;
 
 	public Produto() {
 
 	}
 
-	
-
-	public Produto(long id, String nome, double preco, String sabor, Cliente cliente) {
+	public Produto(long id, String nome, double preco, String sabor, Cliente cliente, Marca marca) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.preco = preco;
 		this.sabor = sabor;
 		this.cliente = cliente;
+		this.marca = marca;
 	}
-
-
 
 	public long getId() {
 		return id;
@@ -77,9 +76,27 @@ public class Produto implements Serializable {
 		this.sabor = sabor;
 	}
 
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Marca getMarca() {
+		return marca;
+	}
+
+	public void setMarca(Marca marca) {
+		this.marca = marca;
+	}
+
+	
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(cliente, id, marca, nome, preco, sabor);
 	}
 
 	@Override
@@ -91,24 +108,16 @@ public class Produto implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Produto other = (Produto) obj;
-		return id == other.id;
+		return Objects.equals(cliente, other.cliente) && id == other.id && Objects.equals(marca, other.marca)
+				&& Objects.equals(nome, other.nome)
+				&& Double.doubleToLongBits(preco) == Double.doubleToLongBits(other.preco)
+				&& Objects.equals(sabor, other.sabor);
 	}
 
 	@Override
 	public String toString() {
-		return "Produto [id=" + id + ", nome=" + nome + ", preco=" + preco + ", sabor=" + sabor + "]";
-	}
-
-
-
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+		return "Produto [id=" + id + ", nome=" + nome + ", preco=" + preco + ", sabor=" + sabor + ", cliente=" + cliente
+				+ ", marca=" + marca + "]";
 	}
 
 }

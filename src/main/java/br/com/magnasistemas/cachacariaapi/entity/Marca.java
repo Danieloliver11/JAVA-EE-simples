@@ -1,6 +1,7 @@
 package br.com.magnasistemas.cachacariaapi.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,36 +13,30 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Cliente implements Serializable {
-
+public class Marca implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-
+	
 	private String nome;
-
-	private String cpf;
-
-	private int anoNascimento;
-
-	private String endereco;
-
-	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+	
+	private LocalDate fundacao;
+	
+	@OneToMany(mappedBy = "marca", cascade = CascadeType.ALL)
 	private List<Produto> produtos;
-
-	public Cliente() {
+	
+	public Marca() {
 		super();
 	}
 
-	public Cliente(long id, String nome, String cpf, int anoNascimento, String endereco, List<Produto> produtos) {
+	public Marca(long id, String nome, LocalDate fundacao, List<Produto> produtos) {
 		super();
 		this.id = id;
 		this.nome = nome;
-		this.cpf = cpf;
-		this.anoNascimento = anoNascimento;
-		this.endereco = endereco;
+		this.fundacao = fundacao;
 		this.produtos = produtos;
 	}
 
@@ -61,28 +56,12 @@ public class Cliente implements Serializable {
 		this.nome = nome;
 	}
 
-	public String getCpf() {
-		return cpf;
+	public LocalDate getFundacao() {
+		return fundacao;
 	}
 
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public int getAnoNascimento() {
-		return anoNascimento;
-	}
-
-	public void setAnoNascimento(int anoNascimento) {
-		this.anoNascimento = anoNascimento;
-	}
-
-	public String getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(String endereco) {
-		this.endereco = endereco;
+	public void setFundacao(LocalDate fundacao) {
+		this.fundacao = fundacao;
 	}
 
 	public List<Produto> getProdutos() {
@@ -93,9 +72,13 @@ public class Cliente implements Serializable {
 		this.produtos = produtos;
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(anoNascimento, cpf, endereco, id, nome, produtos);
+		return Objects.hash(fundacao, id, nome, produtos);
 	}
 
 	@Override
@@ -106,18 +89,21 @@ public class Cliente implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Cliente other = (Cliente) obj;
-		return anoNascimento == other.anoNascimento && Objects.equals(cpf, other.cpf)
-				&& Objects.equals(endereco, other.endereco) && id == other.id && Objects.equals(nome, other.nome)
+		Marca other = (Marca) obj;
+		return Objects.equals(fundacao, other.fundacao) && id == other.id && Objects.equals(nome, other.nome)
 				&& Objects.equals(produtos, other.produtos);
 	}
 
 	@Override
 	public String toString() {
-		return "Cliente [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", anoNascimento=" + anoNascimento
-				+ ", endereco=" + endereco + ", produtos=" + produtos + "]";
+		return "Marca [id=" + id + ", nome=" + nome + ", fundacao=" + fundacao + ", produtos=" + produtos + "]";
 	}
 
+	
+	
+	
+	
+	
 	
 
 }
