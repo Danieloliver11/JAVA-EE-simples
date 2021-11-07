@@ -27,7 +27,6 @@ public class MarcaDAO {
 		return em.createQuery("SELECT c FROM Marca c WHERE c.nome LIKE :custName ").setParameter("custName", name + "%")
 				.getResultList();
 	}
-	
 
 	public Marca postMarca(Marca marca) {
 		em.persist(marca);

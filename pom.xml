@@ -45,7 +45,16 @@
 			<version>2.4.2</version>
 		</dependency>
 
-		
+
+		<!-- https://mvnrepository.com/artifact/org.glassfish.main.javaee-api/javax.jws soap-->
+		<dependency>
+			<groupId>org.glassfish.main.javaee-api</groupId>
+			<artifactId>javax.jws</artifactId>
+			<version>3.1.2.2</version>
+		</dependency>
+
+
+
 
 
 	</dependencies>

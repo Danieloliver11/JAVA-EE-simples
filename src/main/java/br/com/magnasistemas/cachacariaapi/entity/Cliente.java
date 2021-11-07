@@ -118,6 +118,4 @@ public class Cliente implements Serializable {
 				+ ", endereco=" + endereco + ", produtos=" + produtos + "]";
 	}
 
-	
-
 }

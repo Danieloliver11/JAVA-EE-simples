@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,7 +24,7 @@ import br.com.magnasistemas.cachacariaapi.service.MarcaService;
 
 @Path("marca")
 public class MarcaController {
-	
+
 	@Inject
 	private MarcaService marcaService;
 
@@ -59,7 +60,7 @@ public class MarcaController {
 	}
 
 	@GET
-	@Path("{id}") // tratar erro
+	@Path("{id}")
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response findMarcaById(@PathParam("id") long id) {
 
@@ -90,7 +91,7 @@ public class MarcaController {
 	}
 
 	@PUT
-	@Path("{id}") //
+	@Path("{id}")
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putMarca(@PathParam("id") long id, Marca marca) {
@@ -109,7 +110,7 @@ public class MarcaController {
 	}
 
 	@DELETE
-	@Path("{id}") //
+	@Path("{id}")
 	public Response deleteMarca(@PathParam("id") long id) {
 		try {
 			Marca marcaId = marcaService.findByIdMarca(id);
@@ -124,4 +125,5 @@ public class MarcaController {
 
 		return Response.ok().build();
 	}
+
 }

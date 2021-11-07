@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 
 import org.modelmapper.ModelMapper;
 
@@ -19,8 +20,8 @@ public class ProdutoService {
 	private ProdutoDAO dao;
 
 	ModelMapper modelmapper = new ModelMapper();
-	//ok com dto
 	
+
 	public ProdutoDTO postProduto(Produto produto) {
 
 		Produto prod = dao.postProduto(produto);
@@ -36,6 +37,9 @@ public class ProdutoService {
 	public Produto findByIdProduto(long id) {
 
 		Produto produtoId = dao.findProdutoBYid(id);
+		if (produtoId == null) {
+			throw new NotFoundException();
+		}
 		return produtoId;
 	}
 
@@ -44,7 +48,11 @@ public class ProdutoService {
 		List<Produto> produto = dao.findWithName(nome);
 		List<ProdutoDTO> produtosDTO = produto.stream().map(prods -> modelmapper.map(prods, ProdutoDTO.class))
 				.collect(Collectors.toList());
-		return produtosDTO ; 
+
+		if (produto.isEmpty()) {
+			throw new NotFoundException();
+		}
+		return produtosDTO;
 	}
 
 	public ProdutoDTO putProduto(long id, Produto produto) {
@@ -53,66 +61,19 @@ public class ProdutoService {
 		produtoAchado.setNome(produto.getNome());
 		produtoAchado.setPreco(produto.getPreco());
 		produtoAchado.setSabor(produto.getSabor());
+
+		produtoAchado.setCliente(produto.getCliente());
+		produtoAchado.setMarca(produto.getMarca());
 		dao.putProduto(produtoAchado);
-		
+
 		ProdutoDTO produtoDTO;
 		produtoDTO = modelmapper.map(produtoAchado, ProdutoDTO.class);
 		return produtoDTO;
 	}
 
 	public void deleteProduto(Produto produto) {
-		
-		
-		if (produto != null) {
-			 dao.deleteProduto(produto);
-		}else {
-			 
-		}
-		
+		dao.deleteProduto(produto);
+
 	}
 
 }
-
-/*
- * public List<Produto> findAllProduto() {
- * 
- * return dao.findAllProduto(); }
- * 
- * public Produto findByIdProduto(long id) {
- * 
- * Produto produtoId = dao.findProdutoBYid(id); return produtoId; }
- * 
- * public List<Produto> findWithName(String nome) {
- * 
- * return dao.findWithName(nome); }
- * 
- * 
- * 
- * 
- * public ProdutoDTO postProduto(Produto produto) {
- * 
- * Produto prod = dao.postProduto(produto);
- * 
- * return modelmapper.map(prod, ProdutoDTO.class); }
- * 
- * public Produto putProduto(long id, Produto produto) {
- * 
- * Produto produtoAchado = dao.findProdutoBYid(id);
- * produtoAchado.setNome(produto.getNome());
- * produtoAchado.setPreco(produto.getPreco());
- * produtoAchado.setSabor(produto.getSabor()); dao.putProduto(produtoAchado);
- * 
- * return produtoAchado; }
- * 
- * public void deleteProduto(Produto produto) {
- * 
- * dao.deleteProduto(produto); }
- * 
- * }
- * 
- * 
- * public Produto postProduto(Produto produto) { dao.postProduto(produto);
- * return produto; }
- * 
- * 
- */

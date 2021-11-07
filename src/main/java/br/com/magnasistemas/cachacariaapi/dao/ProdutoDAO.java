@@ -8,7 +8,6 @@ import javax.persistence.PersistenceContext;
 
 import br.com.magnasistemas.cachacariaapi.entity.Produto;
 
-
 @Stateless
 public class ProdutoDAO {
 
@@ -18,15 +17,15 @@ public class ProdutoDAO {
 	public List<Produto> findAllProduto() {
 		return em.createQuery("SELECT ae FROM Produto ae", Produto.class).getResultList();
 	}
-	
+
 	public Produto findProdutoBYid(long id) {
-		
-		return em.find(Produto.class,id);
+
+		return em.find(Produto.class, id);
 	}
-	
-	
+
 	public List<Produto> findWithName(String name) {
-	    return em.createQuery("SELECT c FROM Produto c WHERE c.nome LIKE :custName").setParameter("custName", name + "%").getResultList();
+		return em.createQuery("SELECT c FROM Produto c WHERE c.nome LIKE :custName")
+				.setParameter("custName", name + "%").getResultList();
 	}
 
 	public Produto postProduto(Produto produto) {
@@ -35,46 +34,16 @@ public class ProdutoDAO {
 	}
 
 	public Produto putProduto(Produto produto) {
-		//IllegalArgumentException TransactionRequiredException  
+		// IllegalArgumentException TransactionRequiredException
 		return em.merge(produto);
 	}
-	
+
 	public void deleteProduto(Produto produto) {
-		
-		if(!em.contains(produto)) {
+
+		if (!em.contains(produto)) {
 			produto = em.merge(produto);
 		}
-		 em.remove(produto);
+		em.remove(produto);
 	}
-	
-	
-	
-	/*
-	 
-	 	public List<Produto> findAllProduto() {
-		return em.createQuery("SELECT ae FROM Produto ae", Produto.class).getResultList();
-	}
-	public Produto findProdutoBYid(long id) {
-		return em.find(Produto.class,id);
-	}
-
-	public Produto postProduto(Produto produto) {
-		em.persist(produto);
-		return produto;
-	}
-
-	public Produto putProduto(Produto produto) {
-		//IllegalArgumentException TransactionRequiredException  
-		return em.merge(produto);
-	}
-	
-	public void deleteProduto(Produto produto) {
-		
-		if(!em.contains(produto)) {
-			produto = em.merge(produto);
-		}
-		 em.remove(produto);
-	}
-	 */
 
 }

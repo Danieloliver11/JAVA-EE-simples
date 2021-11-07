@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 
 import org.modelmapper.ModelMapper;
 
@@ -42,6 +43,10 @@ public class ClienteService {
 		List<Cliente> cliente = dao.findClienteWithName(nome);
 		List<ClienteDTO> clienteDTO = cliente.stream().map(prods -> modelmapperCli.map(prods, ClienteDTO.class))
 				.collect(Collectors.toList());
+
+		if (cliente.isEmpty()) {
+			throw new NotFoundException();
+		}
 		return clienteDTO;
 	}
 

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 
 import org.modelmapper.ModelMapper;
 
@@ -42,6 +43,10 @@ public class MarcaService {
 		List<Marca> marca = dao.findMarcaWithName(nome);
 		List<MarcaDTO> marcaDTO = marca.stream().map(marcs -> modelmapperMarc.map(marcs, MarcaDTO.class))
 				.collect(Collectors.toList());
+
+		if (marca.isEmpty()) {
+			throw new NotFoundException();
+		}
 		return marcaDTO;
 	}
 

@@ -14,20 +14,20 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Marca implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	private String nome;
-	
+
 	private LocalDate fundacao;
-	
+
 	@OneToMany(mappedBy = "marca", cascade = CascadeType.ALL)
 	private List<Produto> produtos;
-	
+
 	public Marca() {
 		super();
 	}
@@ -98,12 +98,5 @@ public class Marca implements Serializable {
 	public String toString() {
 		return "Marca [id=" + id + ", nome=" + nome + ", fundacao=" + fundacao + ", produtos=" + produtos + "]";
 	}
-
-	
-	
-	
-	
-	
-	
 
 }

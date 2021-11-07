@@ -63,16 +63,13 @@ public class ClienteController {
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response findClienteById(@PathParam("id") long id) {
 
-		ClienteDTO clienteDTO = modelmapperCli.map(clienteService.findByIdCliente(id), ClienteDTO.class);
+		
 		try {
-			if (clienteDTO != null) {
-				return Response.ok(clienteDTO).build();
-			} else {
-				throw new Exception("Id não encontrado!");
-			}
+			ClienteDTO clienteDTO = modelmapperCli.map(clienteService.findByIdCliente(id), ClienteDTO.class);
+			return  Response.ok(clienteDTO).build();
 
 		} catch (Exception e) {
-			return Response.status(Response.Status.NOT_FOUND).entity("Id não encontrado!").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("ID NÃO ENCONTRADO!").build();
 		}
 	}
 
@@ -84,7 +81,7 @@ public class ClienteController {
 		try {
 			clienteDTO = clienteService.findWithName(nome);
 		} catch (Exception e) {
-			return Response.status(Response.Status.NOT_FOUND).entity("Não foi passado nenhum nome!").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("NAO FOI PASSADO NENHUM NOME EXISTENTE!").build();
 		}
 		return Response.ok(clienteDTO).build();
 	}

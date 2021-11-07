@@ -92,8 +92,6 @@ public class Produto implements Serializable {
 		this.marca = marca;
 	}
 
-	
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(cliente, id, marca, nome, preco, sabor);

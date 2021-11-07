@@ -21,7 +21,6 @@ import br.com.magnasistemas.cachacariaapi.dto.ProdutoDTO;
 import br.com.magnasistemas.cachacariaapi.entity.Produto;
 import br.com.magnasistemas.cachacariaapi.service.ProdutoService;
 
-//
 @Path("produto")
 public class ProdutoController {
 
@@ -30,7 +29,7 @@ public class ProdutoController {
 
 	ModelMapper modelmapper = new ModelMapper();
 
-	@POST // ok dto ok,
+	@POST
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postProduto(ProdutoDTO produtoDTO) {
@@ -43,7 +42,7 @@ public class ProdutoController {
 		}
 	}
 
-	@GET // Ok! mapper ok !!!
+	@GET
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response getAllProduto() {
 		List<Produto> produto = null;
@@ -60,38 +59,35 @@ public class ProdutoController {
 	}
 
 	@GET
-	@Path("{id}") // Ok mapper ok! tem que arrumar exceptions!!!
+	@Path("{id}")
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response findProdutoBYid(@PathParam("id") long id) {
 
-		ProdutoDTO produtoDTO = modelmapper.map(produtoservice.findByIdProduto(id), ProdutoDTO.class);
 		try {
-			if (produtoDTO != null) {
-				return Response.ok(produtoDTO).build();
-			} else {
-				throw new Exception("Id não encontrado!");
-			}
+			ProdutoDTO produtoDTO = modelmapper.map(produtoservice.findByIdProduto(id), ProdutoDTO.class);
+			return Response.ok(produtoDTO).build();
 
 		} catch (Exception e) {
-			return Response.status(Response.Status.NOT_FOUND).entity("Id não encontrado!").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("ID NÃO ENCONTRADO!").build();
 		}
 	}
 
 	@GET
-	@Path("/nome/{nome}") // mapper ok! Arrumar para achar todos por qualquer letra
+	@Path("/nome/{nome}")
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response findWithName(@PathParam("nome") String nome) {
 		List<ProdutoDTO> produtoDTO = null;
 		try {
 			produtoDTO = produtoservice.findWithName(nome);
+			return Response.ok(produtoDTO).build();
 		} catch (Exception e) {
-			return Response.status(Response.Status.NOT_FOUND).entity("Não foi passado nenhum nome!").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("NAO FOI PASSADO NENHUM NOME EXISTENTE!").build();
 		}
-		return Response.ok(produtoDTO).build();
+
 	}
 
 	@PUT
-	@Path("{id}") // exception ok muito, dto ok
+	@Path("{id}")
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putProduto(@PathParam("id") long id, Produto produto) {
@@ -110,7 +106,7 @@ public class ProdutoController {
 	}
 
 	@DELETE
-	@Path("{id}") // dto ok exception ok
+	@Path("{id}")
 	public Response deleteProduto(@PathParam("id") long id) {
 		try {
 			Produto produtoId = produtoservice.findByIdProduto(id);
@@ -120,135 +116,10 @@ public class ProdutoController {
 				throw new Exception("Id não encontrado!");
 			}
 		} catch (Exception e) {
-			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+			return Response.status(Response.Status.NOT_FOUND).entity("Id não encontrado!").build();
 		}
 
 		return Response.ok().build();
 	}
 
 }
-
-/*
- * @POST // ok,
- * 
- * @Consumes(value = MediaType.APPLICATION_JSON)
- * 
- * @Produces(MediaType.APPLICATION_JSON) public Response postProduto(Produto
- * produto) {
- * 
- * try { produtoservice.postProduto(produto); return
- * Response.status(Response.Status.CREATED).entity(produto).build(); } catch
- * (Exception e) { return
- * Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
- * .build(); } } //mapper
- * 
- * @POST // ok,
- * 
- * @Consumes(value = MediaType.APPLICATION_JSON)
- * 
- * @Produces(MediaType.APPLICATION_JSON) public Response postProduto(Produto
- * produto) {
- * 
- * try { produtoservice.postProduto(modelmapper.map(produto, ProdutoDTO.class));
- * return Response.status(Response.Status.CREATED).entity(produto).build(); }
- * catch (Exception e) { return
- * Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
- * .build(); } }
- */
-
-/*
- * antes do mapper.
- * 
- * @GET
- * 
- * @Produces(value = MediaType.APPLICATION_JSON) public Response getAllProduto()
- * { List<Produto> produto = null; try { produto =
- * produtoservice.findAllProduto(); } catch (Exception e) { e.printStackTrace();
- * } return Response.ok(produto).build(); }
- * 
- * @GET
- * 
- * @Path("{id}") // Ok!
- * 
- * @Produces(value = MediaType.APPLICATION_JSON) public Response
- * findProdutoBYid(@PathParam("id") long id) {
- * 
- * Produto produto = produtoservice.findProdutoBYid(id);
- * 
- * try { if (produto.getId() == id) { return Response.ok(produto).build(); }
- * else { throw new Exception(); }
- * 
- * } catch (Exception e) { return
- * Response.status(Response.Status.NOT_FOUND).build(); } }
- * 
- * @POST // ok,
- * 
- * @Consumes(value = MediaType.APPLICATION_JSON)
- * 
- * @Produces(MediaType.APPLICATION_JSON) public Response postProduto(Produto
- * produto) {
- * 
- * try { produtoservice.postProduto(produto); return
- * Response.status(Response.Status.CREATED).entity(produto).build(); } catch
- * (Exception e) { return
- * Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
- * .build(); } }
- * 
- * @PUT
- * 
- * @Path("{id}")// nao muito
- * 
- * @Consumes(value = MediaType.APPLICATION_JSON)
- * 
- * @Produces(MediaType.APPLICATION_JSON) public Response
- * putProduto(@PathParam("id") long id, Produto produto) { Produto produtoid =
- * null; try { produtoid = produtoservice.putProduto(id, produto); return
- * Response.status(Response.Status.OK).entity(produtoid).build(); } catch
- * (Exception e) { return
- * Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build(); }
- * 
- * }
- * 
- * @DELETE
- * 
- * @Path("{id}")// no v public Response deleteProduto(@PathParam("id") long id)
- * { Produto produtoId = produtoservice.findByIdProduto(id);
- * produtoservice.deleteProduto(produtoId); return Response.ok().build(); }
- * 
- */
-
-/*
- * @GET
- * 
- * @Produces(value = MediaType.APPLICATION_JSON) public Response getAllProduto()
- * { return Response.ok(produtoservice.findAllProduto()).build(); }
- * 
- * @GET
- * 
- * @Path("{id}")
- * 
- * @Produces(value = MediaType.APPLICATION_JSON) public Response
- * findProdutoBYid(@PathParam("id") long id) { return
- * Response.ok(produtoservice.findByIdProduto(id)).build(); }
- * 
- * @POST
- * 
- * 
- * @Consumes(value = MediaType.APPLICATION_JSON) public Response
- * postProduto(Produto produto) { produtoservice.postProduto(produto); return
- * Response.status(201).build(); }
- * 
- * @PUT
- * 
- * @Path("{id}")
- * 
- * @Consumes(value = MediaType.APPLICATION_JSON) public Response
- * putProduto(@PathParam("id") long id, Produto produto) {
- * produtoservice.putProduto(id,produto); return Response.status(200).build(); }
- * 
- * @DELETE
- * 
- * @Path("{id}") public Response deleteProduto(@PathParam("id") long id) {
- * Produto produtoId = produtoservice.findByIdProduto(id);
- * produtoservice.deleteProduto(produtoId); return Response.ok().build(); }
- */

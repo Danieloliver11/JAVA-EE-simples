@@ -1,6 +1,7 @@
 package br.com.magnasistemas.cachacariaapi.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ClienteDTO {
 
@@ -65,6 +66,25 @@ public class ClienteDTO {
 
 	public void setProdutosDTO(List<ProdutoDTO> produtosDTO) {
 		this.produtosDTO = produtosDTO;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(anoNascimento, cpf, endereco, nome, produtosDTO);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ClienteDTO other = (ClienteDTO) obj;
+		return anoNascimento == other.anoNascimento && Objects.equals(cpf, other.cpf)
+				&& Objects.equals(endereco, other.endereco) && Objects.equals(nome, other.nome)
+				&& Objects.equals(produtosDTO, other.produtosDTO);
 	}
 
 	@Override
